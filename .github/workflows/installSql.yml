@@ -13,7 +13,7 @@ jobs:
       mysql:
         image: mysql:latest
         env:
-          MYSQL_ROOT_PASSWORD: Nishionsql@123
+          MYSQL_ROOT_PASSWORD: Nishionmysql@123
           MYSQL_DATABASE: healthCheck
         ports:
           - 3306:3306
