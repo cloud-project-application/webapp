@@ -12,12 +12,16 @@ jobs:
     services:
       mysql:
         image: mysql:latest
-        env:
+        environment:
           MYSQL_ROOT_PASSWORD: Nishionmysql@123
           MYSQL_DATABASE: healthCheck
         ports:
           - 3306:3306
-        options: --healthCheck-cmd="mysqladmin ping" --healthCheck-interval=10s --healthCheck-timeout=5s --healthCheck-retries=3
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping"]
+          interval: 10s
+          timeout: 5s
+          retries: 3
 
     steps:
       - name: Checkout code
