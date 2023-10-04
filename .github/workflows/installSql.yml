@@ -17,7 +17,7 @@ jobs:
           MYSQL_DATABASE: healthCheck
         ports:
           - 3306:3306
-        # options: --healthCheck-cmd="mysqladmin ping" --healthCheck-interval=10s --healthCheck-timeout=5s --healthCheck-retries=3
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout code
