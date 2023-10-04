@@ -38,12 +38,14 @@ async function createAssignment(req, res) {
         num_of_attempts:req.body.num_of_attempts, 
         deadline:req.body.deadline,
       });
-      assignment.setUser(user); // Set the User association
-      await assignment.save(); // Save the Assignment
-      res.status(201).json(assignment);
+      if(assignment){ 
+        assignment.setUser(user); // Set the User association
+        await assignment.save(); // Save the Assignment
+        res.status(201).json(assignment);
+      }
     }
     else{
-
+      res.status(403).json();
     }
   } catch (error) {
     console.error(error);
@@ -63,16 +65,19 @@ async function updateAssignment(req, res, next) {
   }
 
   try {
-    assignment.name = name;
-    assignment.points = points;
-    assignment.num_of_attempts = num_of_attempts;
-    assignment.deadline = deadline;
-    assignment.assignment_created = assignment.createdAt;
-    assignment.assignment_updated = assignment.updatedAt;
-    
-    await assignment.save();
+    if (assignment) {
 
-    res.status(200).json(assignment);
+      assignment.name = name;
+      assignment.points = points;
+      assignment.num_of_attempts = num_of_attempts;
+      assignment.deadline = deadline;
+      assignment.assignment_created = assignment.createdAt;
+      assignment.assignment_updated = assignment.updatedAt;
+      
+      await assignment.save();
+
+      res.status(200).json(assignment);
+    }
   } catch (error) {
     console.error(error);
     res.status(400).json({ message: 'Bad Request' });
