@@ -16,11 +16,18 @@ scp -i ~/.ssh/digitalocean -r ~/Downloads/webapp-assignment_03 root@159.89.88.97
 Ls
 Cd
 
+
 Sudo apt install nodejs npm 
 
 http://159.89.88.97:3000/v1/assignments
 
 check
+
+=======
+Sudo apt install nodejs npm
+
+http://159.89.88.97:3000/v1/assignments
+
 
     * Health Check:
         * Request Type: GET
