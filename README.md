@@ -14,7 +14,7 @@ FLUSH PRIVILEGES;
 scp -i ~/.ssh/digitalocean -r ~/Downloads/webapp-assignment_03 root@159.89.88.97:~/Assignment03Test
 
 Ls
-Cd abc
+Cd
 
 
 Sudo apt install nodejs npm 
