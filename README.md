@@ -9,7 +9,7 @@ mysql -u root -p
 Create Database healthCheck;
 create user 'nishi'@'localhost' identified by 'Nishionmysql@123';
 GRANT ALL PRIVILEGES ON healthCheck.\* TO 'nishi'@'localhost';
-FLUSH PRIVILEGES;
+FLUSH  PRIVILEGES;
 
 scp -i ~/.ssh/digitalocean -r ~/Downloads/webapp-assignment_03 root@159.89.88.97:~/Assignment03Test
 
