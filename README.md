@@ -17,7 +17,6 @@ Ls
 Cd
 
 
-Sudo apt install nodejs npm 
 
 http://159.89.88.97:3000/v1/assignments
 
