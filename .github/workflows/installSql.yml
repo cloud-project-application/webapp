@@ -1,51 +1,36 @@
 name: CI
-
 on:
-  pull_request:
+   pull_request:
     branches:
       - main
 
 jobs:
   build:
+    name: CI
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:latest
-        env:
-          MYSQL_ROOT_PASSWORD: Nishionmysql@123
-          MYSQL_DATABASE: healthCheck
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Wait for MySQL to be ready
-        run: |
-          until nc -z localhost 3306; do
-            sleep 1
-          done
-      - name: Debug MySQL Container
-        run: docker logs ${{ job.services.mysql.id }}
-
-      - name: Create GitHub Actions MySQL User and Grant Privileges
-        run: |
-          mysql -h 127.0.0.1 -u root -pNishionmysql@123 -e "CREATE USER 'nishi'@'172.18.0.1' IDENTIFIED BY 'Nishionmysql@123';"
-          mysql -h 127.0.0.1 -u root -pNishionmysql@123 -e "GRANT ALL PRIVILEGES ON healthCheck.* TO 'nishi'@'172.18.0.1';"
-          mysql -h 127.0.0.1 -u root -pNishionmysql@123 -e "FLUSH PRIVILEGES;"
-      - name: Run tests
-        run: npm test
-
-      - name: Stop MySQL container
-        run: docker stop ${{ job.services.mysql.id }}
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+    - name: Install dependencies
+      run: npm install
+    - name: Display .env file
+      run: |
+        echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .env
+        echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
+        echo "DATABASE_NAME=healthCheck" >> .env
+        echo "PORT=3000" >> .env
+        cat .env
+    - name: configuremysql
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y curl
+        sudo systemctl start mysql
+        sudo systemctl status mysql
+        mysql -u root -p"root" -e "CREATE DATABASE healthCheck;"
+    - name: Run Tests
+      run : npm test
