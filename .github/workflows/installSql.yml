@@ -31,6 +31,6 @@ jobs:
         sudo apt-get install -y curl
         sudo systemctl start mysql
         sudo systemctl status mysql
-        mysql -u ${{ secrets.DATABASE_USERNAME }} -p"${{ secrets.DATABASE_PASSWORD }}" -e "CREATE DATABASE healthCheck;"
+        mysql -u ${{ secrets.DATABASE_USER }} -p"${{ secrets.DATABASE_PASSWORD }}" -e "CREATE DATABASE healthCheck;"
     - name: Run Tests
       run : npm test
