@@ -95,7 +95,7 @@ app.use('/auth', (req, res) => {
     });
 });
 
-// Handle unauthorized access to other routes with a 403 Forbidden response
+
 app.use((req, res) => {
   res.status(404).json();
 });

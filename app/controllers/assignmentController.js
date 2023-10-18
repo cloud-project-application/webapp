@@ -17,7 +17,7 @@ async function isAuthorized(req, res, next,id) {
     if (user && assignment.UserId == user.id) {
       return assignment; // Return the assignment for further processing
     } else {
-      res.status(401).json({ message: 'Forbidden' });
+      res.status(403).json({ message: 'Forbidden' });
     }
   } catch (error) {
     console.error(error);
