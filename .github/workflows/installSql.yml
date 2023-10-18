@@ -20,17 +20,18 @@ jobs:
       run: npm install
     - name: Display .env file
       run: |
-        echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .env
-        echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
-        echo "DATABASE_NAME=healthCheck" >> .env
-        echo "PORT=3000" >> .env
-        cat .env
+          echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .env
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
+          echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
+          echo "PORT=${{ secrets.PORT }}" >> .env
+          cat .env
     - name: configuremysql
       run: |
-        sudo apt-get update
-        sudo apt-get install -y curl
-        sudo systemctl start mysql
-        sudo systemctl status mysql
-        mysql -u root -p"root" -e "CREATE DATABASE healthCheck;"
+          sudo apt-get update
+          sudo apt-get install -y curl
+          sudo systemctl start mysql
+          sudo systemctl status mysql
+          mysql -u ${{ secrets.DATABASE_USERNAME }} -p"${{ secrets.DATABASE_PASSWORD }}" -e "CREATE DATABASE ${{ secrets.DATABASE_NAME }};"
+
     - name: Run Tests
       run : npm test
