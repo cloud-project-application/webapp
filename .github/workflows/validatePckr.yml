@@ -32,7 +32,8 @@ jobs:
           sudo apt-get install -y curl
           sudo systemctl start mysql
           sudo systemctl status mysql
-          mysql -u {{ secrets.DATABASE_USERNAME }} -p{{ secrets.DATABASE_PASSWORD }} -e "CREATE DATABASE ${{ secrets.DATABASE_NAME }};"
+          mysql -u ${{ secrets.DATABASE_USERNAME }} -p"${{ secrets.DATABASE_PASSWORD }}" -e "CREATE DATABASE ${{ secrets.DATABASE_NAME }};"
+
       - name: Run Tests
         run: npm test
   packer:
