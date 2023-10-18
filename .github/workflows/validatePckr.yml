@@ -1,0 +1,55 @@
+name: validatePckr
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - name: Install dependencies
+        run: npm install
+      - name: Display .env file
+        run: |
+          echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .env
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
+          echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
+          echo "PORT=${{ secrets.PORT }}" >> .env
+          cat .env
+      - name: configuremysql
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl
+          sudo systemctl start mysql
+          sudo systemctl status mysql
+          mysql -u {{ secrets.DATABASE_USERNAME }} -p{{ secrets.DATABASE_PASSWORD }} -e "CREATE DATABASE ${{ secrets.DATABASE_NAME }};"
+      - name: Run Tests
+        run: npm test
+  packer:
+    name: Packer CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Download webapp repository
+        run: zip -r webapp.zip ./
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@main
+        with:
+          packer_version: "1.8.6"
+      - name: Initialize Packer
+        run: packer init myami.pkr.hcl
+      - name: Run `packer fmt`
+        run: packer fmt -check myami.pkr.hcl
+      - name: Run `packer validate`
+        run: packer validate myami.pkr.hcl
