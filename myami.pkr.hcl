@@ -7,12 +7,10 @@ packer {
   }
 }
 
-
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
   env_vars  = jsondecode(file(".env.json"))
 }
-
 
 variable "aws_profile" {
   type    = string
