@@ -7,6 +7,10 @@ packer {
   }
 }
 
+locals {
+  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
+}
+
 variable "aws_profile" {
   type    = string
   default = "dev"
@@ -32,8 +36,6 @@ variable "ssh_username" {
   default = "admin"
 }
 
-locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
-
 source "amazon-ebs" "webapp" {
   profile       = var.aws_profile
   ami_name      = "webapp-ami-${local.timestamp}"
@@ -58,11 +60,9 @@ build {
       "sudo systemctl enable mariadb",
     ]
   }
-
   provisioner "shell" {
-    script = "./setup-database.sh"
+    script = "./database.sh"
   }
-
   provisioner "file" {
     source      = "webapp.zip"
     destination = "/home/admin/webapp.zip"
