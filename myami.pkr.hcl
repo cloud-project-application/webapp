@@ -7,6 +7,11 @@ packer {
   }
 }
 
+locals {
+  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
+  env_vars = jsondecode(file(".env.json"))
+}
+
 variable "aws_profile" {
   type    = string
   default = "dev"
@@ -32,8 +37,6 @@ variable "ssh_username" {
   default = "admin"
 }
 
-locals { timestamp = regex_replace(timestamp(), "[- TZ:]", "") }
-
 source "amazon-ebs" "webapp" {
   profile       = var.aws_profile
   ami_name      = "webapp-ami-${local.timestamp}"
@@ -56,11 +59,11 @@ build {
       "sudo apt -y install nodejs npm mariadb-server mariadb-client",
       "sudo systemctl start mariadb",
       "sudo systemctl enable mariadb",
+      "sudo mysql -u ${local.env_vars.DB_USER} -p${local.env_vars.DB_PASSWORD} -e 'CREATE DATABASE ${local.env_vars.DB_NAME};'",
+      "sudo mysql -u ${local.env_vars.DB_USER} 'ALTER USER 'root'@'localhost' IDENTIFIED BY '$NEW_PASSWORD';
+      "sudo mysql  -u ${local.env_vars.DB_USER} -p${local.env_vars.DB_PASSWORD} -e \"GRANT ALL PRIVILEGES ON ${local.env_vars.DB_NAME}.* TO '${local.env_vars.DB_USER}'@'${local.env_vars.DB_HOST}' IDENTIFIED BY '${local.env_vars.DB_PASSWORD}';\"",
+      "sudo mysql  -u ${local.env_vars.DB_USER} -p${local.env_vars.DB_PASSWORD} -e 'FLUSH PRIVILEGES;'"
     ]
-  }
-
-  provisioner "shell" {
-    script = "./setup-database.sh"
   }
 
   provisioner "file" {
