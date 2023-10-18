@@ -61,10 +61,10 @@ build {
       "sudo apt -y install nodejs npm mariadb-server mariadb-client",
       "sudo systemctl start mariadb",
       "sudo systemctl enable mariadb",
-      "sudo mysql -u ${local.env_vars.DB_USER} -p${local.env_vars.DB_PASSWORD} -e 'CREATE DATABASE ${local.env_vars.DB_NAME};'",
-      "sudo mysql -u ${local.env_vars.DB_USER} 'ALTER USER 'root'@'localhost' IDENTIFIED BY '$NEW_PASSWORD';
-      "sudo mysql  -u ${local.env_vars.DB_USER} -p${local.env_vars.DB_PASSWORD} -e \"GRANT ALL PRIVILEGES ON ${local.env_vars.DB_NAME}.* TO '${local.env_vars.DB_USER}'@'${local.env_vars.DB_HOST}' IDENTIFIED BY '${local.env_vars.DB_PASSWORD}';\"",
-      "sudo mysql  -u ${local.env_vars.DB_USER} -p${local.env_vars.DB_PASSWORD} -e 'FLUSH PRIVILEGES;'"
+      "sudo mysql -u ${local.env_vars.DATABASE_USERNAME} -p${local.env_vars.DATABASE_PASSWORD} -e 'CREATE DATABASE ${local.env_vars.DATABASE_NAME};'",
+      "sudo mysql -u ${local.env_vars.DATABASE_USERNAME} -e \"ALTER USER '${local.env_vars.DATABASE_USERNAME}'@'localhost' IDENTIFIED BY '${local.env_vars.DATABASE_PASSWORD}';\"",
+      "sudo mysql  -u ${local.env_vars.DATABASE_USERNAME} -p${local.env_vars.DATABASE_PASSWORD} -e \"GRANT ALL PRIVILEGES ON ${local.env_vars.DATABASE_NAME}.* TO '${local.env_vars.DATABASE_USERNAME}'@'localhost' IDENTIFIED BY '${local.env_vars.DATABASE_PASSWORD}';\"",
+      "sudo mysql  -u ${local.env_vars.DATABASE_USERNAME} -p${local.env_vars.DATABASE_PASSWORD} -e 'FLUSH PRIVILEGES;'"
     ]
   }
 
