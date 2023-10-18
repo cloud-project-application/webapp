@@ -9,7 +9,11 @@ packer {
 
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
-  env_vars  = jsondecode(file(".env.json"))
+  env_vars = {
+    DATABASE_USERNAME = "your_username",
+    DATABASE_PASSWORD = "your_password",
+    DATABASE_NAME     = "your_database_name",
+  }
 }
 
 variable "aws_profile" {
@@ -59,10 +63,10 @@ build {
       "sudo apt -y install nodejs npm mariadb-server mariadb-client",
       "sudo systemctl start mariadb",
       "sudo systemctl enable mariadb",
-      "sudo mysql -u ${local.env_vars.DATABASE_USERNAME} -p${local.env_vars.DATABASE_PASSWORD} -e 'CREATE DATABASE ${local.env_vars.DATABASE_NAME};'",
-      "sudo mysql -u ${local.env_vars.DATABASE_USERNAME} -e \"ALTER USER '${local.env_vars.DATABASE_USERNAME}'@'localhost' IDENTIFIED BY '${local.env_vars.DATABASE_PASSWORD}';\"",
-      "sudo mysql  -u ${local.env_vars.DATABASE_USERNAME} -p${local.env_vars.DATABASE_PASSWORD} -e \"GRANT ALL PRIVILEGES ON ${local.env_vars.DATABASE_NAME}.* TO '${local.env_vars.DATABASE_USERNAME}'@'localhost' IDENTIFIED BY '${local.env_vars.DATABASE_PASSWORD}';\"",
-      "sudo mysql  -u ${local.env_vars.DATABASE_USERNAME} -p${local.env_vars.DATABASE_PASSWORD} -e 'FLUSH PRIVILEGES;'"
+      "sudo mysql -u ${env("DATABASE_USERNAME")} -p${env("DATABASE_PASSWORD")} -e 'CREATE DATABASE ${env("DATABASE_NAME")};'",
+      "sudo mysql -u ${env("DATABASE_USERNAME")} -e \"ALTER USER '${env("DATABASE_USERNAME")}'@'localhost' IDENTIFIED BY '${env("DATABASE_PASSWORD")}';\"",
+      "sudo mysql  -u ${env("DATABASE_USERNAME")} -p${env("DATABASE_PASSWORD")} -e \"GRANT ALL PRIVILEGES ON ${env("DATABASE_NAME")}.* TO '${env("DATABASE_USERNAME")}'@'localhost' IDENTIFIED BY '${env("DATABASE_PASSWORD")}';\"",
+      "sudo mysql  -u ${env("DATABASE_USERNAME")} -p${env("DATABASE_PASSWORD")} -e 'FLUSH PRIVILEGES;'"
     ]
   }
 
