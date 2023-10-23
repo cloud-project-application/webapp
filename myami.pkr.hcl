@@ -5,7 +5,7 @@ packer {
       version = ">= 1.0.0"
     }
   }
-}
+
 
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
