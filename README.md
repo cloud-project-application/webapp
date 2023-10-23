@@ -1,3 +1,4 @@
+Rasing a PR:
 Steps for debain config:
 ssh -i .ssh/digitalocean root@159.89.88.97
 sudo apt install mariadb-server mariadb-client
