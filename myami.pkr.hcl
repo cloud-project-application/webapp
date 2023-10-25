@@ -77,7 +77,6 @@ build {
       "sudo mv /home/admin/webapp.service /etc/systemd/system/",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable webapp",
-      "sudo systemctl start webapp",
     ]
   }
 
