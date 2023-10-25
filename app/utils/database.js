@@ -1,6 +1,6 @@
 // /app/utils/database.js
 const { Sequelize } = require('sequelize');
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "amienv") {
   require("dotenv").config();
 }
 

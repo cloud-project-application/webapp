@@ -1,5 +1,9 @@
 #!/usr/bin/node
-require('dotenv').config();
+if (process.env.NODE_ENV !== "amienv") {
+  require("dotenv").config();
+}
+
+// require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const bootstrapDatabase = require('./app/utils/bootstrapDatabase');
