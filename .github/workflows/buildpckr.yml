@@ -24,6 +24,7 @@ jobs:
           echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
           echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
           echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "HOST=${{ secrets.HOST }}" >> .env
           cat .env
       - name: configuremysql
         run: |
@@ -32,7 +33,6 @@ jobs:
           sudo systemctl start mysql
           sudo systemctl status mysql
           mysql -u ${{ secrets.DATABASE_USERNAME }} -p"${{ secrets.DATABASE_PASSWORD }}" -e "CREATE DATABASE ${{ secrets.DATABASE_NAME }};"
-
 
       - name: Run Integration Tests
         run: npm test

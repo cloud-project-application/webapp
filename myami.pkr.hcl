@@ -60,9 +60,7 @@ build {
       "sudo systemctl enable mariadb",
     ]
   }
-  provisioner "shell" {
-    script = "./database.sh"
-  }
+
   provisioner "file" {
     source      = "webapp.zip"
     destination = "/home/admin/webapp.zip"
@@ -73,6 +71,15 @@ build {
       "sudo apt-get install unzip",
       "cd /home/admin",
       "unzip webapp.zip",
+      "npm install",
+      "sudo adduser ec2-user",
+      "echo 'ec2-user:ec2-user1234' | sudo chpasswd",
+      "sudo usermod -aG ec2-user ec2-user",
+      "sudo chmod +x /home/admin/index.js",
+      "sudo mv /home/admin/webapp.service /etc/systemd/system/",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl enable webapp",
+      "sudo systemctl start webapp",
     ]
   }
 

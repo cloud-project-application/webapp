@@ -25,6 +25,7 @@ jobs:
           echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
           echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
           echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "HOST=${{ secrets.HOST }}" >> .env
           cat .env
       - name: configuremysql
         run: |
