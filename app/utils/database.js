@@ -1,9 +1,12 @@
 // /app/utils/database.js
 const { Sequelize } = require('sequelize');
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 // Create a Sequelize instance with database connection options
 const sequelize = new Sequelize(process.env.DATABASE_NAME, process.env.DATABASE_USERNAME, process.env.DATABASE_PASSWORD, {
-  host: '127.0.0.1',
+  host: process.env.HOST,
   dialect: 'mysql',
 });
 

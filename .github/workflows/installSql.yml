@@ -1,6 +1,6 @@
 name: CI
 on:
-   pull_request:
+  pull_request:
     branches:
       - main
 
@@ -10,28 +10,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14
-    - name: Install dependencies
-      run: npm install
-    - name: Display .env file
-      run: |
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - name: Install dependencies
+        run: npm install
+      - name: Display .env file
+        run: |
           echo "DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }}" >> .env
           echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
           echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env
           echo "PORT=${{ secrets.PORT }}" >> .env
+          echo "HOST=${{ secrets.HOST }}" >> .env
           cat .env
-    - name: configuremysql
-      run: |
+      - name: configuremysql
+        run: |
           sudo apt-get update
           sudo apt-get install -y curl
           sudo systemctl start mysql
           sudo systemctl status mysql
           mysql -u ${{ secrets.DATABASE_USERNAME }} -p"${{ secrets.DATABASE_PASSWORD }}" -e "CREATE DATABASE ${{ secrets.DATABASE_NAME }};"
 
-    - name: Run Tests
-      run : npm test
+      - name: Run Tests
+        run: npm test
