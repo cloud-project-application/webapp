@@ -13,7 +13,7 @@ const {sequelize} = require('./app/utils/database');
 const { authenticateToken } = require('./app/middleware/authentication'); // Require the middleware
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
 app.use(bodyParser.json());
 
