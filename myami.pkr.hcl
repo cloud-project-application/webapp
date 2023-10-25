@@ -68,7 +68,7 @@ build {
 
   provisioner "shell" {
     inline = [
-      "sudo apt-get install unzip",
+      "sudo apt-get install unzip -y",
       "cd /home/admin",
       "unzip webapp.zip",
       "npm install",
