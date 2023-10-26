@@ -1,7 +1,6 @@
 [Unit]
 Description=Node.js Web Application
-After=network.target cloud-init.target
-Wants=network.target cloud-init.target
+Wants=cloud-init.target
 
 [Service]
 EnvironmentFile=/etc/environment
