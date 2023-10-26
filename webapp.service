@@ -6,7 +6,7 @@ Wants=network.target cloud-init.target
 [Service]
 EnvironmentFile=/etc/environment
 WorkingDirectory=/home/admin
-ExecStart=/home/admin/index.js
+ExecStart=/usr/bin/node /home/admin/index.js
 Restart=always
 User=ec2-user
 Group=ec2-user
