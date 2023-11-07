@@ -73,7 +73,7 @@ build {
       "yes | sudo adduser ec2-user",
       "yes | echo 'ec2-user:ec2-user1234' | sudo chpasswd",
       "yes | sudo usermod -aG ec2-user ec2-user",
-      "sudo chown -R ec2-user:ec2-user /home/admin",  # Change ownership to ec2-user
+      "sudo chown -R ec2-user:ec2-user /home/admin", # Change ownership to ec2-user
       "sudo find /home/admin -type f -exec chmod 644 {} \\;",
       "sudo find /home/admin -type d -exec chmod 755 {} \\;",
       "sudo chmod +x /home/admin/index.js",
