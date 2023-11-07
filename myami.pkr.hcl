@@ -73,10 +73,18 @@ build {
       "yes | sudo adduser ec2-user",
       "yes | echo 'ec2-user:ec2-user1234' | sudo chpasswd",
       "yes | sudo usermod -aG ec2-user ec2-user",
+      "sudo chown -R ec2-user:ec2-user /home/admin",  # Change ownership to ec2-user
+      "sudo find /home/admin -type f -exec chmod 644 {} \\;",
+      "sudo find /home/admin -type d -exec chmod 755 {} \\;",
       "sudo chmod +x /home/admin/index.js",
       "sudo mv /home/admin/webapp.service /etc/systemd/system/",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable webapp",
+      "curl -O https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb",
+      "dpkg -i -E ./amazon-cloudwatch-agent.deb",
+      "sudo mv /home/admin/cloudwatch-config.json /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json",
+      "systemctl enable amazon-cloudwatch-agent",
+      "systemctl start amazon-cloudwatch-agent",
     ]
   }
 

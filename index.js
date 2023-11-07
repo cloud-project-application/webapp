@@ -6,6 +6,7 @@ if (process.env.NODE_ENV !== "amienv") {
 // require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const { logging } = require('./logging'); 
 const bootstrapDatabase = require('./app/utils/bootstrapDatabase');
 const assignmentRoutes = require('./app/routes/assignmentRoutes');
 const authRoutes = require('./app/routes/authenticationRoutes');
@@ -45,11 +46,13 @@ app.get('/healthz',checkForQueryParams, checkForBody, (req, res) => {
     .then(() => {
       // 200 OK if the database connection is successful
       res.status(200).header('Cache-Control', 'no-cache').end();
+      logging.info('Database is connected');
     })
     .catch((err) => {
       // 503 Service Unavailable if there is an error connecting to the database
       console.error('Database connection error:', err);
       res.status(503).header('Cache-Control', 'no-cache').end();
+      logging.info('Database is connection failed');
     });
 });
 app.use('/healthz', (req, res) => {
@@ -58,11 +61,13 @@ app.use('/healthz', (req, res) => {
     .then(() => {
       // 200 OK if the database connection is successful
       res.status(405).header('Cache-Control', 'no-cache').end();
+      logging.info('Database is connection failed 405');
     })
     .catch((err) => {
       // 503 Service Unavailable if there is an error connecting to the database
       console.error('Database connection error:', err);
       res.status(503).header('Cache-Control', 'no-cache').end();
+      logging.info('Database is connection failed');
     });
 });
 
@@ -75,11 +80,13 @@ app.use('/v1/assignments', (req, res) => {
     .then(() => {
       // 200 OK if the database connection is successful
       res.status(405).header('Cache-Control', 'no-cache').end();
+      logging.info('405 method not found');
     })
     .catch((err) => {
       // 503 Service Unavailable if there is an error connecting to the database
       console.error('Database connection error:', err);
       res.status(503).header('Cache-Control', 'no-cache').end();
+      logging.info('Database is connection failed');
     });
 });
 
@@ -103,6 +110,7 @@ app.use('/auth', (req, res) => {
 
 app.use((req, res) => {
   res.status(404).json();
+  logging.info('404');
 });
 
 app.listen(port, () => {
