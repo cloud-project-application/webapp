@@ -6,7 +6,7 @@ if (process.env.NODE_ENV !== "amienv") {
 // require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const { logging } = require('./logging'); 
+const logging = require('./logging'); 
 const bootstrapDatabase = require('./app/utils/bootstrapDatabase');
 const assignmentRoutes = require('./app/routes/assignmentRoutes');
 const authRoutes = require('./app/routes/authenticationRoutes');
