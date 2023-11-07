@@ -74,22 +74,15 @@ build {
       "yes | echo 'ec2-user:ec2-user1234' | sudo chpasswd",
       "yes | sudo usermod -aG ec2-user ec2-user",
       "sudo chmod +x /home/admin/index.js",
+      "sudo setfacl -Rm u:ec2-user:rwx /home/admin",
       "sudo mv /home/admin/webapp.service /etc/systemd/system/",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable webapp",
-    ]
-  }
-  provisioner "shell" {
-    inline = [
-      "sudo curl -O https://s3.amazonaws.com/amazoncloudwatch-agent/linux/amd64/latest/AmazonCloudWatchAgent.zip",
-      "unzip AmazonCloudWatchAgent.zip",
-      "sudo ./install.sh",
-
-      # Upload the CloudWatch Agent configuration file (amazon-cloudwatch-agent.json)
-      "sudo cp amazon-cloudwatch-agent.json /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json",
-
-      # Start the CloudWatch Agent and enable it to start on boot
-      "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s",
+      "echo 'Installing CloudWatch Agent'",
+      "sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/debian/amd64/latest/amazon-cloudwatch-agent.deb",
+      "sudo dpkg -i -E ./amazon-cloudwatch-agent.deb",
+      "echo 'CloudWatch Agent Installed'",
+      "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/home/admin/amazon-cloudwatch-agent.json -s",
       "sudo systemctl enable amazon-cloudwatch-agent",
       "sudo systemctl start amazon-cloudwatch-agent",
     ]
