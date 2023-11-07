@@ -27,12 +27,12 @@ console.log(process.env.NODE_ENV )
 if (process.env.NODE_ENV === 'amienv') {
     // if ('production' === 'production') {
   console.log('adding in log')
-  logger.add(new winston.transports.File({ filename: 'err.log', level: 'error' }));
-  logger.add(new winston.transports.File({ filename: 'all.log' }));
+  logging.add(new winston.transports.File({ filename: 'err.log', level: 'error' }));
+  logging.add(new winston.transports.File({ filename: 'all.log' }));
  
   // Configure CloudWatch transport
  
-  logger.add(new WinstonCloudWatch({
+  logging.add(new WinstonCloudWatch({
     logGroupName: 'webapplogger', // Replace with your log group
     logStreamName: 'loggingerr', // Replace with your log stream
     awsRegion: 'us-east-1', // Replace with your AWS region
@@ -43,7 +43,7 @@ if (process.env.NODE_ENV === 'amienv') {
     jsonMessage: true
   }));
  
-  logger.add(new WinstonCloudWatch({
+  logging.add(new WinstonCloudWatch({
     logGroupName: 'webapplogger',
     logStreamName: 'loggingall', // Use your specific log stream name for combined logs
     awsRegion: 'us-east-1', // Ensure AWS_REGION is set in your environment variables
