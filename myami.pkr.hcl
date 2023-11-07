@@ -80,6 +80,11 @@ build {
       "sudo mv /home/admin/webapp.service /etc/systemd/system/",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable webapp",
+      "curl -O https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb",
+      "dpkg -i -E ./amazon-cloudwatch-agent.deb",
+      "sudo mv /home/admin/cloudwatch-config.json /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json",
+      "systemctl enable amazon-cloudwatch-agent",
+      "systemctl start amazon-cloudwatch-agent",
     ]
   }
   provisioner "shell" {
