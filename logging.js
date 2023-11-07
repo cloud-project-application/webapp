@@ -9,7 +9,7 @@ const myFormat = printf(({ level, message, timestamp, stack }) => {
 });
  
 // Create a logger instance
-const logger = winston.createLogger({
+const logging = winston.createLogger({
   level: 'info', // Set the default minimum level to log. Change this to debug for more verbose logging
   format: combine(
     timestamp(), // Add timestamp to each log
