@@ -92,10 +92,10 @@ build {
       "curl -O https://s3.amazonaws.com/amazoncloudwatch-agent/linux/amd64/latest/AmazonCloudWatchAgent.zip",
       "unzip AmazonCloudWatchAgent.zip",
       "sudo ./install.sh",
- 
+
       # Upload the CloudWatch Agent configuration file (amazon-cloudwatch-agent.json)
       "sudo cp amazon-cloudwatch-agent.json /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json",
- 
+
       # Start the CloudWatch Agent and enable it to start on boot
       "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s",
       "sudo systemctl enable amazon-cloudwatch-agent",
