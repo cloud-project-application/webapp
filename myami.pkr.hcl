@@ -70,6 +70,7 @@ build {
       "cd /home/admin",
       "unzip webapp.zip",
       "npm install",
+      "sudo apt-get install acl",
       "yes | sudo adduser ec2-user",
       "yes | echo 'ec2-user:ec2-user1234' | sudo chpasswd",
       "yes | sudo usermod -aG ec2-user ec2-user",
