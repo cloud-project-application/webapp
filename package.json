@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.441.0",
+    "aws-sdk": "^2.1489.0",
     "basic-auth": "^2.0.1",
     "bcrypt": "^5.1.1",
     "chai": "^4.3.10",
@@ -21,6 +23,8 @@
     "mocha": "^10.2.0",
     "mysql2": "^3.6.1",
     "sequelize": "^6.33.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0",
+    "winston-cloudwatch": "^6.2.0"
   }
 }
