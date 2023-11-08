@@ -32,23 +32,23 @@ if (process.env.NODE_ENV === 'amienv') {
  
   // Configure CloudWatch transport
  
-  logging.add(new WinstonCloudWatch({
-    logGroupName: 'webapplogger', // Replace with your log group
-    logStreamName: 'loggingerr', // Replace with your log stream
-    awsRegion: 'us-east-1', // Replace with your AWS region
-    // awsAccessKeyId: keyId, // Set in your environment variables
-    // awsSecretKey: key, // Set in your environment variables
-    // awsSessionToken is optional and only necessary if you are using temporary credentials obtained via STS
-    // awsSessionToken: process.env.AWS_SESSION_TOKEN, // Set in your environment variables if using temporary credentials
-    jsonMessage: true
-  }));
+  // logging.add(new WinstonCloudWatch({
+  //   logGroupName: 'webapplogger', // Replace with your log group
+  //   logStreamName: 'loggingerr', // Replace with your log stream
+  //   awsRegion: 'us-east-1', // Replace with your AWS region
+  //   // awsAccessKeyId: keyId, // Set in your environment variables
+  //   // awsSecretKey: key, // Set in your environment variables
+  //   // awsSessionToken is optional and only necessary if you are using temporary credentials obtained via STS
+  //   // awsSessionToken: process.env.AWS_SESSION_TOKEN, // Set in your environment variables if using temporary credentials
+  //   jsonMessage: true
+  // }));
  
-  logging.add(new WinstonCloudWatch({
-    logGroupName: 'webapplogger',
-    logStreamName: 'loggingall', // Use your specific log stream name for combined logs
-    awsRegion: 'us-east-1', // Ensure AWS_REGION is set in your environment variables
-    jsonMessage: true
-  }));
+  // logging.add(new WinstonCloudWatch({
+  //   logGroupName: 'webapplogger',
+  //   logStreamName: 'loggingall', // Use your specific log stream name for combined logs
+  //   awsRegion: 'us-east-1', // Ensure AWS_REGION is set in your environment variables
+  //   jsonMessage: true
+  // }));
  
 }
  
