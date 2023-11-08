@@ -1,6 +1,6 @@
 const { Assignment } = require('../utils/database');
 const jwt = require('jsonwebtoken');
-const { logging } = require('../../logging'); 
+const logging = require('../../logging'); 
 
 
 // Middleware to check if the user has authorization
