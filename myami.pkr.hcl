@@ -87,6 +87,8 @@ build {
       "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/bin/cloudwatch-config.json -s",
       "sudo systemctl enable amazon-cloudwatch-agent",
       "sudo systemctl start amazon-cloudwatch-agent",
+      "sudo chown -R ec2-user:ec2-user /home/admin/*",
+      "sudo chmod -R 750 /home/admin/*"
     ]
   }
 
