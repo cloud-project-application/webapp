@@ -1,6 +1,7 @@
 const { Assignment } = require('../utils/database');
 const jwt = require('jsonwebtoken');
 const logging = require('../../logging'); 
+const incrementAPIMetric = require("../../statsDConfig");
 
 
 // Middleware to check if the user has authorization
@@ -17,6 +18,7 @@ async function isAuthorized(req, res, next,id) {
     console.log(assignment.UserId ,"assignment.UserId ");
     console.log(user.id,"user.id");
     if (user && assignment.UserId == user.id) {
+      logging.info('Assignment found');
       return assignment; // Return the assignment for further processing
     } else {
       logging.info('User is not authorized to perform the task');
@@ -46,15 +48,18 @@ async function createAssignment(req, res) {
         assignment.setUser(user); // Set the User association
         await assignment.save(); // Save the Assignment
         logging.info('Assignmnet saved');
+        incrementAPIMetric("/v1/assignments", "POST");
         res.status(201).json(assignment);
       }
     }
     else{
+      incrementAPIMetric("/v1/assignments", "POST");
       logging.info('Forbidden');
       res.status(403).json();
     }
   } catch (error) {
     console.error(error);
+    incrementAPIMetric("/v1/assignments", "POST");
     logging.info('Bad request');
     res.status(400).json({ message: 'Bad Request' });
   }
@@ -83,11 +88,13 @@ async function updateAssignment(req, res, next) {
       
       await assignment.save();
       logging.info('Assignmnet Updated');
+      incrementAPIMetric("/v1/assignments/:id", "PUT");
       res.status(200).json(assignment);
     }
   } catch (error) {
     console.error(error);
     logging.info('Bad request');
+    incrementAPIMetric("/v1/assignments/:id", "PUT");
     res.status(400).json({ message: 'Bad Request' });
   }
 }
@@ -102,10 +109,12 @@ async function deleteAssignment(req, res,next) {
 
   try {
     await assignment.destroy();
+    incrementAPIMetric("/v1/assignments/:id", "DELETE");
     logging.info('Assignmnet deleted');
     res.status(204).end();
   } catch (error) {
     console.error(error);
+    incrementAPIMetric("/v1/assignments/:id", "DELETE");
     logging.info('Bad request');
     res.status(400).json({ message: 'Bad Request' });
   }
@@ -114,10 +123,12 @@ async function deleteAssignment(req, res,next) {
 async function getAllAssignments(req, res) {
   try {
     const assignments = await Assignment.findAll();
+    incrementAPIMetric("/v1/assignments", "GET");
     logging.info('received all assignmnets');
     res.status(200).json(assignments);
   } catch (error) {
     console.error(error);
+    incrementAPIMetric("/v1/assignments", "GET");
     logging.info('Bad request');
     res.status(400).json({ message: 'Bad Request' });
   }
@@ -131,13 +142,16 @@ async function getAssignmentDetails(req, res) {
 
     if (!assignment) {
       logging.info('Assignment not found');
+      incrementAPIMetric("/v1/assignments/:id", "GET");
       return res.status(404).json({ message: 'Assignment not found' });
     }
+    incrementAPIMetric("/v1/assignments/:id", "GET");
     logging.info('Assignment found');
     res.status(200).json(assignment);
   } catch (error) {
     console.error(error);
     logging.info('Bad Request');
+    incrementAPIMetric("/v1/assignments/:id", "GET");
     res.status(400).json({ message: 'Bad Request' });
   }
 }
