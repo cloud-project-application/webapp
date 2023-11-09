@@ -24,12 +24,16 @@ bootstrapDatabase();
 
 const checkForQueryParams = (req, res, next) => {
   if (Object.keys(req.query).length > 0) {
+    incrementAPIMetric("/healthz", "GET");
+    logging.info('Bad Request with params');
     return res.status(400).json();
   }
   next(); // Continue processing the request
 };
 const checkForBody = (req, res, next) => {
   if (Object.keys(req.body).length > 0) {
+    incrementAPIMetric("/healthz", "GET");
+    logging.info('Bad Request with Body');
     return res.status(400).json();
   }
   next(); // Continue processing the request
@@ -40,6 +44,7 @@ const checkForBody = (req, res, next) => {
 app.get('/healthz',checkForQueryParams, checkForBody, (req, res) => {
   if (Object.keys(req.query).length > 0) {
     incrementAPIMetric("/healthz", "GET");
+    logging.info('Bad Request');
     res.status(400).header('Cache-Control', 'no-cache').send();
     return;
   }
@@ -118,7 +123,7 @@ app.use('/auth', (req, res) => {
 
 app.use((req, res) => {
   res.status(404).json();
-  logging.info('404');
+  logging.info('404 Not Available');
 });
 
 app.listen(port, () => {
