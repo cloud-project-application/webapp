@@ -9,16 +9,19 @@ const {
   updateAssignment,
   deleteAssignment,
 } = require('../controllers/assignmentController');
+const logging = require('../../logging');
 console.log("here");
 
 const checkForBody = (req, res, next) => {
   if (Object.keys(req.body).length > 0) {
+    logging.info('Bad request for Body');
     return res.status(400).json();
   }
   next(); // Continue processing the request
 };
 const checkForQueryParams = (req, res, next) => {
   if (Object.keys(req.query).length > 0) {
+    logging.info('Bad request for Parameter');
     return res.status(400).json();
   }
   next(); // Continue processing the request

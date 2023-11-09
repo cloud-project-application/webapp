@@ -18,7 +18,7 @@ async function isAuthorized(req, res, next,id) {
     console.log(assignment.UserId ,"assignment.UserId ");
     console.log(user.id,"user.id");
     if (user && assignment.UserId == user.id) {
-      logging.info('Assignment found');
+      logging.info('Assignment found, user authorized to access the assignmnet');
       return assignment; // Return the assignment for further processing
     } else {
       logging.info('User is not authorized to perform the task');
@@ -47,7 +47,7 @@ async function createAssignment(req, res) {
       if(assignment){ 
         assignment.setUser(user); // Set the User association
         await assignment.save(); // Save the Assignment
-        logging.info('Assignmnet saved');
+        logging.info('Assignment saved and created');
         incrementAPIMetric("/v1/assignments", "POST");
         res.status(201).json(assignment);
       }
@@ -73,6 +73,7 @@ async function updateAssignment(req, res, next) {
   const assignment = await isAuthorized(req, res, next,id); // Check authorization and get the assignment
 
   if (!assignment) {
+    incrementAPIMetric("/v1/assignments/:id", "PUT");
     return; // Authorization failed, and the response has been handled in the isAuthorized middleware
   }
 
@@ -104,6 +105,7 @@ async function deleteAssignment(req, res,next) {
   const assignment = await isAuthorized(req, res, next,id); // Check authorization and get the assignment
 
   if (!assignment) {
+    incrementAPIMetric("/v1/assignments/:id", "DELETE");
     return; // Authorization failed, and the response has been handled in the isAuthorized middleware
   }
 

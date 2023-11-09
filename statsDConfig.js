@@ -8,7 +8,9 @@ const incrementAPIMetric = async (apiName,httpMethod) => {
     // Increment a StatsD counter
     // statsd.increment(`api.${apiName}.calls`);
     statsd.increment(`api.${apiName}.${httpMethod}.calls`);
-    console.log("statsd configured!")
+    console.log(`apiName: ${apiName}`);
+    console.log(`httpMethod: ${httpMethod}`);
+    console.log("statsd configured!");
   } catch (error) {
     console.error("Error updating custom metric:", error);
   }
