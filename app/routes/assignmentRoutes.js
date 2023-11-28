@@ -8,6 +8,7 @@ const {
   getAssignmentDetails,
   updateAssignment,
   deleteAssignment,
+  submitAssignment,
 } = require('../controllers/assignmentController');
 const logging = require('../../logging');
 console.log("here");
@@ -40,5 +41,7 @@ router.put('/:id',checkForQueryParams, updateAssignment);
 
 // Delete Assignment - DELETE /v1/assignments/:id
 router.delete('/:id', checkForQueryParams, checkForBody, deleteAssignment);
+
+router.post('/:id/submission', checkForQueryParams, submitAssignment);
 
 module.exports = router;

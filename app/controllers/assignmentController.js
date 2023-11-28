@@ -1,8 +1,12 @@
-const { Assignment } = require('../utils/database');
+const { Assignment, Submission, User } = require('../utils/database');
 const jwt = require('jsonwebtoken');
 const logging = require('../../logging'); 
 const incrementAPIMetric = require("../../statsDConfig");
-
+if (process.env.NODE_ENV !== "amienv") {
+  require("dotenv").config();
+}
+const AWS = require('aws-sdk');
+const sns = new AWS.SNS();
 
 // Middleware to check if the user has authorization
 async function isAuthorized(req, res, next,id) {
@@ -22,6 +26,102 @@ async function isAuthorized(req, res, next,id) {
       return assignment; // Return the assignment for further processing
     } else {
       logging.info('User is not authorized to perform the task');
+      res.status(403).json({ message: 'Forbidden' });
+    }
+  } catch (error) {
+    console.error(error);
+    logging.info('Bad request');
+    res.status(400).json({ message: 'Bad Request' });
+  }
+}
+
+async function submitAssignment(req, res, next) {
+  const { id } = req.params;
+  const { submission_url } = req.body;
+  const user = req.user;
+  const snsTopicArn = process.env.SNS_TOPIC_ARN;
+  console.log(req.body,"req----->");
+
+  try {
+    const assignment = await Assignment.findByPk(id);
+
+    if (!assignment) {
+      logging.info('Assignment not found');
+      incrementAPIMetric(`/v1/assignments/${id}/submission`, "POST");
+      return res.status(404).json({ message: 'Assignment not found' });
+    }
+
+    // Check if the user is authorized to submit for this assignment
+    if (user && assignment.UserId == user.id) {
+      console.log("natt",assignment.num_of_attempts);
+      console.log("userid",assignment.UserId);
+      console.log("user.id",user.email);
+      // Check if the submission is allowed based on the retries config
+      // if (assignment.num_of_attempts > 1) {
+        // Check if the assignment due date has passed
+        const currentDate = new Date();
+        const userSubmissions = await Submission.count({
+          where: {
+            assignment_id: assignment.id,
+          },
+          include: [
+            {
+              model: Assignment,
+              where: { id: assignment.id , UserId: user.id}, // Match the assignment ID
+              include: [
+                {
+                  model: User,
+                  attributes: [], // Only include necessary attributes, or remove this line to include all
+                },
+                // Other includes for the Assignment model, if needed
+              ],
+            },
+          ],
+        });
+        if (currentDate <= assignment.deadline) {
+          
+          console.log("asssubmission",userSubmissions);
+          if (userSubmissions >= assignment.num_of_attempts) {
+            logging.info('Submission rejected - Exceeded maximum retries');
+            res.status(400).json({ message: 'Submission rejected - Exceeded maximum retries' });
+          }
+          // Create a new submission
+          const submission = await Submission.create({
+            // id: uuidv4(),
+            assignment_id: assignment.id,
+            submission_url: submission_url,
+            submission_date: new Date(),
+            submission_updated: new Date(),
+          });
+          assignment.num_of_attempts -= 1;
+          await assignment.save();
+
+          const snsMessage = {
+            Subject: "New Assignment is Submitted",
+            Message: submission. submission_url, 
+            TopicArn: snsTopicArn,
+            MessageAttributes: {
+              userEmail: {
+                DataType: "String",
+                StringValue: user.email,
+              }
+            }
+          }
+          await sns.publish(snsMessage).promise();
+          console.log("message published------>",snsMessage);
+          logging.info('Submission accepted');
+          incrementAPIMetric(`/v1/assignments/${id}/submission`, "POST");
+          res.status(201).json(submission);
+        } else {
+          logging.info('Submission rejected - Assignment deadline has passed');
+          res.status(400).json({ message: 'Submission rejected - Assignment deadline has passed' });
+        }
+      // } else {
+      //   logging.info('Submission rejected - Exceeded maximum retries');
+      //   res.status(400).json({ message: 'Submission rejected - Exceeded maximum retries' });
+      // }
+    } else {
+      logging.info('User is not authorized to submit for this assignment');
       res.status(403).json({ message: 'Forbidden' });
     }
   } catch (error) {
@@ -90,7 +190,7 @@ async function updateAssignment(req, res, next) {
       await assignment.save();
       logging.info('Assignmnet Updated');
       incrementAPIMetric("/v1/assignments/id", "PUT");
-      res.status(200).json(assignment);
+      res.status(204).json();
     }
   } catch (error) {
     console.error(error);
@@ -164,4 +264,5 @@ module.exports = {
   deleteAssignment,
   getAllAssignments,
   getAssignmentDetails,
+  submitAssignment,
 };
