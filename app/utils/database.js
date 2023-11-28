@@ -85,7 +85,7 @@ const Assignment = sequelize.define('Assignment', {
     type: Sequelize.INTEGER,
     allowNull: false,
     validate: {
-      min: 1,
+      min: 0,
       max: 100,
     },
   },
@@ -123,6 +123,34 @@ const Assignment = sequelize.define('Assignment', {
 User.hasMany(Assignment);
 Assignment.belongsTo(User);
 
+const Submission = sequelize.define('Submission', {
+  id: {
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    primaryKey: true,
+    allowNull: false,
+  },
+  assignment_id: {
+    type: Sequelize.UUID,
+    allowNull: false,
+  },
+  submission_url: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  submission_date: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
+  submission_updated: {
+    type: Sequelize.DATE,
+    allowNull: false,
+  },
+});
+
+Assignment.hasMany(Submission);
+Submission.belongsTo(Assignment);
+
 // Sync models with the database
 sequelize.sync()
   .then(() => {
@@ -132,4 +160,4 @@ sequelize.sync()
     console.error('Database sync error:', error);
   });
 
-module.exports = { sequelize, User, Assignment };
+module.exports = { sequelize, User, Assignment, Submission };
