@@ -38,6 +38,22 @@ async function isAuthorized(req, res, next,id) {
   }
 }
 
+function isValidURL(url) {
+  const urlPattern = new RegExp(
+    '^https?://' + // protocol
+    '(www\\.)?' + // optional www subdomain
+    '[a-zA-Z0-9-]+\\.[a-zA-Z]{2,6}' + // domain
+    '(/[a-zA-Z0-9-._~:/?#[\\]@!$&\'()*+,;=%]+)?' // optional path
+  );
+
+  return urlPattern.test(url);
+}
+
+// Function to check if the content type is JSON
+function isJson(req) {
+  return req.headers['content-type'] === 'application/json';
+}
+
 async function submitAssignment(req, res, next) {
   const { id } = req.params;
   const { submission_url } = req.body;
@@ -46,8 +62,28 @@ async function submitAssignment(req, res, next) {
   console.log(req.body,"req----->");
 
   try {
-    const assignment = await Assignment.findByPk(id);
+    
+    if (!isJson(req)) {
+      logging.info('Invalid content type');
+      return res.status(400).json({ message: 'Invalid content type. Request body must be JSON.' });
+    }
 
+    // Check if submission_url is present and is a valid URL
+    if (!submission_url || !isValidURL(submission_url)) {
+      logging.info('Invalid submission_url');
+      return res.status(400).json({ message: 'Invalid submission_url' });
+    }
+
+    // Check if there are no additional parameters in the request body
+    const validKeys = ['submission_url'];
+    const additionalKeys = Object.keys(req.body).filter(key => !validKeys.includes(key));
+
+    if (additionalKeys.length > 0) {
+      logging.info('Invalid parameters in request body');
+      return res.status(400).json({ message: 'Invalid parameters in request body. Only submission_url is allowed.' });
+    }
+
+    const assignment = await Assignment.findByPk(id);
     if (!assignment) {
       logging.info('Assignment not found');
       incrementAPIMetric(`/v1/assignments/${id}/submission`, "POST");
