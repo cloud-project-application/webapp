@@ -6,7 +6,8 @@ if (process.env.NODE_ENV !== "amienv") {
   require("dotenv").config();
 }
 const AWS = require('aws-sdk');
-const sns = new AWS.SNS();
+AWS.config.update({ region: 'us-east-1' }); // replace YOUR_REGION with your region
+const sns = new AWS.SNS({ apiVersion: '2010-03-31' });
 
 // Middleware to check if the user has authorization
 async function isAuthorized(req, res, next,id) {
@@ -98,7 +99,7 @@ async function submitAssignment(req, res, next) {
 
           const snsMessage = {
             Subject: "New Assignment is Submitted",
-            Message: submission. submission_url, 
+            Message: submission.submission_url, 
             TopicArn: snsTopicArn,
             MessageAttributes: {
               userEmail: {
