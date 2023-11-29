@@ -10,7 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-cloudwatch-logs": "^3.441.0",
+    "adm-zip": "^0.5.10",
     "aws-sdk": "^2.1489.0",
+    "axios": "^1.6.2",
     "basic-auth": "^2.0.1",
     "bcrypt": "^5.1.1",
     "chai": "^4.3.10",
