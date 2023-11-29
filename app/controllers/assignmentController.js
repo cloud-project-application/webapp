@@ -8,8 +8,8 @@ if (process.env.NODE_ENV !== "amienv") {
 const AWS = require('aws-sdk');
 AWS.config.update({ region: 'us-east-1' }); // replace YOUR_REGION with your region
 const sns = new AWS.SNS({ apiVersion: '2010-03-31' });
-const AdmZip = require('adm-zip');
-const axios = require('axios');
+// const AdmZip = require('adm-zip');
+// const axios = require('axios');
 
 // Middleware to check if the user has authorization
 async function isAuthorized(req, res, next,id) {
@@ -89,20 +89,20 @@ async function submitAssignment(req, res, next) {
             res.status(400).json({ message: 'Submission rejected - Exceeded maximum retries' });
           }
           // const zip = new AdmZip(submission_url);
-          try{
-          const response = await axios.get(submission_url, { responseType: 'arraybuffer' });
+          // try{
+          // const response = await axios.get(submission_url, { responseType: 'arraybuffer' });
           
-            const zip = new AdmZip(response.data);
-            const zipEntries = zip.getEntries();
-            if (zipEntries.length === 0) {
-              logging.info('Submission rejected - Empty or invalid zip file');
-              return res.status(400).json({ message: 'Submission rejected - Empty or invalid zip file' });
-            }
-          }
-          catch(error){
-            logging.info('Submission rejected - Empty or invalid zip file');
-            return res.status(400).json({ message: 'Submission rejected - Empty or invalid zip file' });
-          }
+          //   const zip = new AdmZip(response.data);
+          //   const zipEntries = zip.getEntries();
+          //   if (zipEntries.length === 0) {
+          //     logging.info('Submission rejected - Empty or invalid zip file');
+          //     return res.status(400).json({ message: 'Submission rejected - Empty or invalid zip file' });
+          //   }
+          // }
+          // catch(error){
+          //   logging.info('Submission rejected - Empty or invalid zip file');
+          //   return res.status(400).json({ message: 'Submission rejected - Empty or invalid zip file' });
+          // }
           // Create a new submission
           const submission = await Submission.create({
             // id: uuidv4(),
@@ -127,7 +127,7 @@ async function submitAssignment(req, res, next) {
           await sns.publish(snsMessage).promise();
           console.log("message published------>",snsMessage);
           logging.info('Submission accepted');
-          incrementAPIMetric(`/v1/assignments/${id}/submission`, "POST");
+          incrementAPIMetric(`/v1/assignments/id/submission`, "POST");
           assignment.num_of_attempts -= 1;
           await assignment.save();
           res.status(201).json(submission);
