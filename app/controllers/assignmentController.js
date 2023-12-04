@@ -86,7 +86,7 @@ async function submitAssignment(req, res, next) {
     const assignment = await Assignment.findByPk(id);
     if (!assignment) {
       logging.info('Assignment not found');
-      incrementAPIMetric(`/v1/assignments/${id}/submission`, "POST");
+      incrementAPIMetric(`/v2/assignments/${id}/submission`, "POST");
       return res.status(404).json({ message: 'Assignment not found' });
     }
 
@@ -163,7 +163,7 @@ async function submitAssignment(req, res, next) {
           await sns.publish(snsMessage).promise();
           console.log("message published------>",snsMessage);
           logging.info('Submission accepted');
-          incrementAPIMetric(`/v1/assignments/id/submission`, "POST");
+          incrementAPIMetric(`/v2/assignments/id/submission`, "POST");
           assignment.num_of_attempts -= 1;
           await assignment.save();
           res.status(201).json(submission);
@@ -203,18 +203,18 @@ async function createAssignment(req, res) {
         assignment.setUser(user); // Set the User association
         await assignment.save(); // Save the Assignment
         logging.info('Assignment saved and created');
-        incrementAPIMetric("/v1/assignments", "POST");
+        incrementAPIMetric("/v2/assignments", "POST");
         res.status(201).json(assignment);
       }
     }
     else{
-      incrementAPIMetric("/v1/assignments", "POST");
+      incrementAPIMetric("/v2/assignments", "POST");
       logging.info('Forbidden');
       res.status(403).json();
     }
   } catch (error) {
     console.error(error);
-    incrementAPIMetric("/v1/assignments", "POST");
+    incrementAPIMetric("/v2/assignments", "POST");
     logging.info('Bad request');
     res.status(400).json({ message: 'Bad Request' });
   }
@@ -228,7 +228,7 @@ async function updateAssignment(req, res, next) {
   const assignment = await isAuthorized(req, res, next,id); // Check authorization and get the assignment
 
   if (!assignment) {
-    incrementAPIMetric("/v1/assignments/id", "PUT");
+    incrementAPIMetric("/v2/assignments/id", "PUT");
     return; // Authorization failed, and the response has been handled in the isAuthorized middleware
   }
 
@@ -244,13 +244,13 @@ async function updateAssignment(req, res, next) {
       
       await assignment.save();
       logging.info('Assignmnet Updated');
-      incrementAPIMetric("/v1/assignments/id", "PUT");
+      incrementAPIMetric("/v2/assignments/id", "PUT");
       res.status(204).json();
     }
   } catch (error) {
     console.error(error);
     logging.info('Bad request');
-    incrementAPIMetric("/v1/assignments/id", "PUT");
+    incrementAPIMetric("/v2/assignments/id", "PUT");
     res.status(400).json({ message: 'Bad Request' });
   }
 }
@@ -260,18 +260,18 @@ async function deleteAssignment(req, res,next) {
   const assignment = await isAuthorized(req, res, next,id); // Check authorization and get the assignment
 
   if (!assignment) {
-    incrementAPIMetric("/v1/assignments/id", "DELETE");
+    incrementAPIMetric("/v2/assignments/id", "DELETE");
     return; // Authorization failed, and the response has been handled in the isAuthorized middleware
   }
 
   try {
     await assignment.destroy();
-    incrementAPIMetric("/v1/assignments/id", "DELETE");
+    incrementAPIMetric("/v2/assignments/id", "DELETE");
     logging.info('Assignmnet deleted');
     res.status(204).end();
   } catch (error) {
     console.error(error);
-    incrementAPIMetric("/v1/assignments/id", "DELETE");
+    incrementAPIMetric("/v2/assignments/id", "DELETE");
     logging.info('Bad request');
     res.status(400).json({ message: 'Bad Request' });
   }
@@ -280,12 +280,12 @@ async function deleteAssignment(req, res,next) {
 async function getAllAssignments(req, res) {
   try {
     const assignments = await Assignment.findAll();
-    incrementAPIMetric("/v1/assignments", "GET");
+    incrementAPIMetric("/v2/assignments", "GET");
     logging.info('received all assignmnets');
     res.status(200).json(assignments);
   } catch (error) {
     console.error(error);
-    incrementAPIMetric("/v1/assignments", "GET");
+    incrementAPIMetric("/v2/assignments", "GET");
     logging.info('Bad request');
     res.status(400).json({ message: 'Bad Request' });
   }
@@ -299,16 +299,16 @@ async function getAssignmentDetails(req, res) {
 
     if (!assignment) {
       logging.info('Assignment not found');
-      incrementAPIMetric("/v1/assignments/id", "GET");
+      incrementAPIMetric("/v2/assignments/id", "GET");
       return res.status(404).json({ message: 'Assignment not found' });
     }
-    incrementAPIMetric("/v1/assignments/id", "GET");
+    incrementAPIMetric("/v2/assignments/id", "GET");
     logging.info('Assignment found');
     res.status(200).json(assignment);
   } catch (error) {
     console.error(error);
     logging.info('Bad Request');
-    incrementAPIMetric("/v1/assignments/id", "GET");
+    incrementAPIMetric("/v2/assignments/id", "GET");
     res.status(400).json({ message: 'Bad Request' });
   }
 }
