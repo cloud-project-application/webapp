@@ -97,9 +97,9 @@ build {
       "sudo apt clean",
       "sudo rm -rf /var/lib/apt/lists/*"
     ]
-    post-processor "manifest" {
-      output     = "manifest.json"
-      strip_path = true
-    }
+  }
+  post-processor "manifest" {
+    output     = "manifest.json"
+    strip_path = true
   }
 }
