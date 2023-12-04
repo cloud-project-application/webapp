@@ -54,7 +54,7 @@ app.get('/healthz',checkForQueryParams, checkForBody, (req, res) => {
       // 200 OK if the database connection is successful
       incrementAPIMetric("/healthz", "GET");
       res.status(200).header('Cache-Control', 'no-cache').end();
-      logging.info('Database is connected');
+      logging.info('Database is connecteddddd');
     })
     .catch((err) => {
       // 503 Service Unavailable if there is an error connecting to the database
