@@ -84,20 +84,20 @@ app.use('/healthz', (req, res) => {
 
 // Apply the authentication middleware to routes that require authentication
 
-app.use('/demo/assignments', authenticateToken, assignmentRoutes);
-app.use('/demo/assignments', (req, res) => {
+app.use('/v3/assignments', authenticateToken, assignmentRoutes);
+app.use('/v3/assignments', (req, res) => {
   sequelize
     .authenticate()
     .then(() => {
       // 200 OK if the database connection is successful
-      incrementAPIMetric("/demo/assignments", "PATCH");
+      incrementAPIMetric("/v3/assignments", "PATCH");
       res.status(405).header('Cache-Control', 'no-cache').end();
       logging.info('405 method not found');
     })
     .catch((err) => {
       // 503 Service Unavailable if there is an error connecting to the database
       console.error('Database connection error:', err);
-      incrementAPIMetric("/demo/assignments", "GET");
+      incrementAPIMetric("/v3/assignments", "GET");
       res.status(503).header('Cache-Control', 'no-cache').end();
       logging.info('Database is connection failed');
     });
